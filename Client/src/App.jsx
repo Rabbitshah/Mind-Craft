@@ -1,34 +1,81 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ComponentLibraryPage } from "./pages/ComponentLibrary";
+import { CourseCatalog } from "./pages/CourseCatalog";
+import { CourseDetail } from "./pages/CourseDetail";
+import { ForgotPasswordPage, SignInPage, SignUpPage } from "./pages/AuthPages";
+import { InstructorDashboard } from "./pages/InstructorDashboard";
+import { LandingPage } from "./pages/LandingPage";
+import { LearningPlayerPage } from "./pages/LearningPlayer";
+import { LearnerDashboard } from "./pages/LearnerDashboard";
+import {
+  CheckoutCartPage,
+  CheckoutConfirmationPage,
+  CheckoutPaymentPage,
+} from "./pages/CheckoutPages";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/courses" element={<CourseCatalog />} />
+        <Route path="/courses/:courseId" element={<CourseDetail />} />
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route
+          path="/learn"
+          element={
+            <ProtectedRoute roles={["learner"]}>
+              <LearnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/learn/:courseId"
+          element={
+            <ProtectedRoute roles={["learner"]}>
+              <LearningPlayerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teach"
+          element={
+            <ProtectedRoute roles={["instructor"]}>
+              <InstructorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute roles={["learner"]}>
+              <CheckoutCartPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout/payment"
+          element={
+            <ProtectedRoute roles={["learner"]}>
+              <CheckoutPaymentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout/confirmation"
+          element={
+            <ProtectedRoute roles={["learner"]}>
+              <CheckoutConfirmationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/components" element={<ComponentLibraryPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
